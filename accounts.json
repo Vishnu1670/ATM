@@ -1,0 +1,41 @@
+{
+    "a1": {
+        "name": "vishnu",
+        "ph": 9638527410,
+        "pin": 1234,
+        "balance": 7100.0,
+        "acc_statement": [
+            "Amount Deposited 5000, total balance = 6000",
+            "Amount Withdraw 3000, total balance = 3000",
+            "Amount Transfer too a2. Transfered Amount = 2000. current balance 1000",
+            "Amount Received From 6520620. Received Amount = 1000. current balance 2000",
+            "Amount Deposited -500, total balance = 1500",
+            "Amount Withdraw -500, total balance = 2000",
+            "Amount Withdraw 2000, total balance = 0",
+            "Amount Deposited 5000, total balance = 5000",
+            "Amount Deposited 1000, total balance = 6000",
+            "Amount Deposited 100., total balance = 6100",
+            "Amount Deposited 1000., total balance = 7100.0"
+        ]
+    },
+    "a2": {
+        "name": "varun",
+        "ph": 9638527410,
+        "pin": 1234,
+        "balance": 3000,
+        "acc_statement": [
+            "Amount Received From a1. Transfered Amount = 2000. current balance 3000"
+        ]
+    },
+    "6520620": {
+        "name": "Bhavan",
+        "ph": 9638527410,
+        "pin": 4321,
+        "balance": 0,
+        "acc_statement": [
+            "Amount Deposited 2000, total balance = 3000",
+            "Amount Withdraw 2000, total balance = 1000",
+            "Amount Transfer too a1. Transfered Amount = 1000. current balance 0"
+        ]
+    }
+}
