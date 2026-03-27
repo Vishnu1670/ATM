@@ -144,33 +144,29 @@ class ATM:
         print (f'\nSuccefully Deposited!.. This is your Current balance {add_balance} ')
         self.save()
 
-    def withdraw():
-        #check the account num login 
-        if not current_acc :
-            print ("login first")
-            return
-        
+    def withdraw(self):        
         pin = int(input("Enter the pin: "))
-        if pin != Accounts[current_acc]["pin"]:
+        if pin != self.Accounts[self.current_acc]["pin"]:
             print("Enter the correct PIN")
             return
         
-        amount = input("Enter the amount you want to withdraw: ")
-        balance = Accounts[current_acc]["balance"]
+        amount = float(input("Enter the amount you want to withdraw: "))
+        balance = self.Accounts[self.current_acc]["balance"]
 
-        if amount < balance:
-            print("Can't give Negative value ")
+        if amount <= 0:
+            print("Invalid amount")
             return
 
         if balance < amount:
             print ("Insufficient balance!..")
             return
         
-        withdraw_balance = balance - float(amount)
-        Accounts[current_acc]["balance"] = withdraw_balance
-        Accounts[current_acc]["acc_statement"].append(f"Amount Withdraw {amount}, total balance = {withdraw_balance}")
+        withdraw_balance = balance - amount
+        self.Accounts[self.current_acc]["balance"] = withdraw_balance
+        self.Accounts[self.current_acc]["acc_statement"].append(f"Amount Withdraw {amount}, total balance = {withdraw_balance}")
         print (f'\nSuccefully Withdraw!.. This is your Current balance {withdraw_balance}')
-        save()
+        self.save()
+
 
     def show_balance():
         #check the account num login 
