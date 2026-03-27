@@ -124,30 +124,25 @@ class ATM:
         else:
             print("\nThree failed attempts. Try again later.")
 
-    #function for cash deposit
-    def deposit():
-        #check the account num login 
-        if not current_acc :
-            print ("\nPlease Login first")
-            return
-        
+    #function for cash deposit:
+    def deposit(self):        
         pin = int(input("Enter the pin: "))
-        if pin != Accounts[current_acc]["pin"]:
+        if pin != self.Accounts[self.current_acc]["pin"]:
             print("\nEnter the correct PIN")
             return
 
-        amount = input("\nEnter the amount you want to Deposit: ")
-        balance = Accounts[current_acc]["balance"]
-        add_balance = float(amount) + balance
+        amount = float(input("\nEnter the amount you want to Deposit: "))
+        balance = self.Accounts[self.current_acc]["balance"]
+        add_balance = amount + balance
 
-        if add_balance < balance:
-            print("\nCan't give Negative value ")
+        if amount <= 0:
+            print("\nCan't give Negative value or Zero ")
             return
         
-        Accounts[current_acc]["balance"] = add_balance
-        Accounts[current_acc]["acc_statement"].append(f"Amount Deposited {amount}., total balance = {add_balance}")
+        self.Accounts[self.current_acc]["balance"] = add_balance
+        self.Accounts[self.current_acc]["acc_statement"].append(f"Amount Deposited {amount}., total balance = {add_balance}")
         print (f'\nSuccefully Deposited!.. This is your Current balance {add_balance} ')
-        save()
+        self.save()
 
     def withdraw():
         #check the account num login 
