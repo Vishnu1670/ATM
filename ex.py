@@ -177,30 +177,36 @@ class ATM:
         balance = self.Accounts[self.current_acc]["balance"]
         print(f"\nYour Balance is RS: {balance}")
 
-
-    def pin_change():
-        #check the account num login 
-        if not current_acc:
-            print("login first")
-            return
-        
+    #change Account pin
+    def pin_change(self):  
+        #get old to check the user
         old_pin = int(input("Enter your old pin: "))
-
-        og_pin = Accounts[current_acc]["pin"]
-
-        if old_pin != og_pin:
-            print("\nEnter the correct pin")
-            return
+        #getting the new pin
+        og_pin = self.Accounts[self.current_acc]["pin"]
+        #checking the correct pin
+        while True:
+            if old_pin != og_pin:
+                print("\nEnter the correct pin")
+            else:
+                break
         
         new_pin = int(input("Enter the new Pin: "))
+        #check the old and new pin are same
+        while True:
+            if new_pin == old_pin:
+                print("\nOld PIN Can not be your New PIN")
+            else:
+                break
+        
         check_new = int(input("Enter the new Pin again for conformation: "))
-
+        #getting the two step conformation 
         if new_pin == check_new:
-            Accounts[current_acc]["pin"] = new_pin
+            self.Accounts[self.current_acc]["pin"] = new_pin
             print("\nNew pin Updated succefully ")
         else:
             print("Please update the new pin correctly in conformation")
-        save()
+        self.save()
+
 
     #Transfer amount to anothe Account
     def fund_transfer():
