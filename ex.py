@@ -49,49 +49,54 @@ class ATM:
             print("\nInvalid input! Please enter y or n")
         
     #Account register
-    def account_reg():
-        acc_no = input("Enter the Account Number: ")
-        #check the Account name alredy Exist
-        if acc_no in Accounts:
-            print("\nAccount Alerdy Exist")
-            return
-        
-        name = input("Enter the Name: ")
-        #The must be a alphabet
-        if not name.isalpha():
-            print("\nThe name must be Alphabet")
-            return
-        
-        ph = input("Enter the Phone Number: +91")
-        #The ph num must be 10digit and must be an integer
-        if len(ph) != 10 or  not ph.isdigit():
-            print("\nPlease enter 10 digit number !..")
-            return
-        
-        pin = input("Enter the 4 Digit PIN Number: ")
-        #Check the pin
-        if len(pin) != 4 or  not pin.isdigit():
-            print("\nPlease the Pin must be 4 digit number!..")
-            return
-        
-        balance = input("Enter the Deposit Amount: ")
-        #check the balance is number
-        if not balance.isdigit() :
-            print("\nInvalide Balance Entry !..")
-            return
-        
-        #assing the data
-        Account = {}
-        Account["name"]= name
-        Account["ph"]= int(ph)
-        Account["pin"]= int(pin)
-        Account["balance"]= float(balance) 
-        Account["acc_statement"] = []
-        Accounts[acc_no] = Account
+    def account_reg(self):
+            acc_no = input("\nEnter the Account Number: ")
+            if acc_no == "":
+                print("Account number cannot be empty")
+                return
+            #check the Account name alredy Exist
+            if acc_no in self.Accounts:
+                print("\nAccount Number Alerdy Exist!..Try Something New. ")
+                return
+            
+            name = input("\nEnter the Name: ")
+            #The must be a alphabet
+            if not name.isalpha():
+                print("\nThe name must be in Alphabet")
+                return
 
-        print("Register Succefully")
-        #saves to the file
-        save()
+            ph = input("\nEnter the Phone Number: +91 ")
+            #The ph num must be 10digit and must be an integer
+            if len(ph) != 10 or  not ph.isdigit():
+                print("\nPlease enter 10 digit Phone number !..")
+                return
+            
+            pin = input("\nEnter a 4 Digit PIN Number: ")
+            #Check the pin
+            if len(pin) != 4 or  not pin.isdigit():
+                print("\nThe Pin must be 4 digit number!..")
+                return
+            
+            try:
+                balance = float(input("\nEnter the Deposit Amount: "))
+
+                if balance <= 0:
+                    print("\nAmount must be greater than 0!..")
+            except ValueError:
+                print("\nPlease enter a valid number!..")
+        
+            #assing the data
+            self.Accounts[acc_no] = {
+                "name": name,
+                "ph": int(ph),
+                "pin": int(pin),
+                "balance": float(balance),
+                "acc_statement": []
+            }
+
+            print("Register Succefully")
+            #saves to the file
+            self.save()
 
     #login function
     def login():
