@@ -248,6 +248,19 @@ class ATM:
             print (s)
         print("-------------Done--------------")
 
+    def del_account(self):
+        #getting conformation to delete the account
+        confirm = input("Are you sure you want to delete this account? y/n: ").lower()
+        if confirm == "y":
+            #using del keyword to delete the account data
+            del self.Accounts[self.current_acc]
+            self.current_acc = ""
+            self.save()
+            print("Account deleted successfully")
+        else:
+            print("Cancelled")
+
+
 while True:
     if not current_acc:
         print("""
