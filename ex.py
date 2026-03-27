@@ -32,9 +32,9 @@ class ATM:
 
 
     #saves the data to the json file
-    def save():
-        with open(File,"w") as f:
-            json.dump(Accounts, f, indent=4)
+    def save(self):
+        with open(self.File,"w") as f:
+            json.dump(self.Accounts, f, indent=4)
 
     #logout from the current Account login
     def logout():
