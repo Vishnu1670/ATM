@@ -99,31 +99,30 @@ class ATM:
             self.save()
 
     #login function
-    def login():
-        #refer the gobal current account
-        global current_acc
-
+    def login(self):
         acc_no = input("Enter the Account :")
+
         #check the account num alredy login
-        if acc_no == current_acc:
+        if acc_no == self.current_acc:
             print("\nThis Account have alredy login")
             return
-
-        pin = int(input("\nEnter the pin: "))
         #check the account num is not register
-        if acc_no not in Accounts:
+        if acc_no not in self.Accounts:
             print("\nAccount number not Exist, Please Register first")
             return
-        
-        account = Accounts.get(acc_no)
-
-        og_pin = account.get("pin")
-        #check the pin
-        if og_pin != pin :
-            print("\nInvalid PIN")
-            return
-        current_acc = acc_no
-        print("\nLogin Succefully!..")
+        #checking the pin for 3 times
+        for i in range(3):
+            pin = int(input("Enter PIN: "))
+            if self.Accounts[acc_no]["pin"] == pin:
+                self.current_acc = acc_no
+                print("\nLogin Successful")
+                break
+            else:
+                #less the count every time the pin invalid
+                count = 2 - i
+                print(f"Invalid PIN. You have {count} attempt left")
+        else:
+            print("\nThree failed attempts. Try again later.")
 
     #function for cash deposit
     def deposit():
