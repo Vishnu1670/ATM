@@ -37,16 +37,14 @@ class ATM:
             json.dump(self.Accounts, f, indent=4)
 
     #logout from the current Account login
-    def logout():
-        global current_acc
-
+    def logout(self):
         option = input("\nAre you sure you want to logout? y/n: ").lower()
 
         if option == "y":
-            current_acc = ""
+            self.current_acc = ""
             print("\nLogout Successfully!..")
         elif option == "n":
-            print("\nLogout Cancelled")
+            print("\nNot Logout")
         else:
             print("\nInvalid input! Please enter y or n")
         
