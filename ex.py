@@ -241,14 +241,9 @@ class ATM:
         print("Transfered Succefully")
         self.save()
 
-    def show_transation_statement():
-        #check the account num login 
-        if not current_acc:
-            print("login first")
-            return
-        
+    def show_transation_statement(self):
         #print the acc statement
-        statement = Accounts[current_acc]["acc_statement"]
+        statement = self.Accounts[self.current_acc]["acc_statement"]
         for s in statement:
             print (s)
         print("-------------Done--------------")
