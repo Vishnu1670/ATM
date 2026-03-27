@@ -167,14 +167,16 @@ class ATM:
         print (f'\nSuccefully Withdraw!.. This is your Current balance {withdraw_balance}')
         self.save()
 
-
-    def show_balance():
-        #check the account num login 
-        if not current_acc:
-            print("login first")
+    #Balance check
+    def show_balance(self):
+        #check with the pin 
+        pin = int(input("Enter your PIN Number: "))
+        if pin != self.Accounts[self.current_acc]["pin"]:
+            print("Enter the Correct PIN!..")
             return
-        balance = Accounts[current_acc]["balance"]
+        balance = self.Accounts[self.current_acc]["balance"]
         print(f"\nYour Balance is RS: {balance}")
+
 
     def pin_change():
         #check the account num login 
