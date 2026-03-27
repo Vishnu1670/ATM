@@ -254,15 +254,18 @@ class ATM:
         if confirm == "y":
             #using del keyword to delete the account data
             del self.Accounts[self.current_acc]
+            #auto logout 
             self.current_acc = ""
             self.save()
             print("Account deleted successfully")
         else:
             print("Cancelled")
 
-
+#Assiging  the object for the class 
+atm = ATM()
 while True:
-    if not current_acc:
+    #check is it in the current account
+    if not atm.current_acc:
         print("""
         1. Account register
         2. Login
@@ -272,53 +275,46 @@ while True:
         choice = int(input("Enter option: "))
 
         if choice == 1:
-            account_reg()
-
+            atm.account_reg()
         elif choice == 2:
-            login()
-
-        elif choice == 3:
+            atm.login()
+        elif choice ==3:
             break
-
         else:
             print("Invalid Choice")
-
+    #if login this print statement shows
     else:
-        print(f"\nLogged in as: {Accounts[current_acc]["name"]}")
+        print(f"\nLogged in as: {atm.Accounts[atm.current_acc]['name']}")
 
         print("""
         1. Cash Deposit
         2. Cash Withdraw
         3. Balance Enquiry
         4. Change PIN
-        5. Transfer Amount                
+        5. Amount Transfer                
         6. Transaction Statement
-        7. Logout
+        7. Delete Account
+        8. Logout
         """)
 
         choice = int(input("Enter option: "))
 
         if choice == 1:
-            deposit()
-
+            atm.deposit()
         elif choice == 2:
-            withdraw()
-
+            atm.withdraw()
         elif choice == 3:
-            show_balance()
-
+            atm.show_balance()
         elif choice == 4:
-            pin_change()
-
+            atm.pin_change()
         elif choice == 5:
-            fund_transfer()
-
+            atm.fund_transfer()
         elif choice == 6:
-            show_transation_statement()
-
+            atm.show_transation_statement()
         elif choice == 7:
-            logout()
-
+            atm.del_account()
+        elif choice == 8:
+            atm.logout()
         else:
             print("Invalid Choice")
 
