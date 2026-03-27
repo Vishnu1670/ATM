@@ -209,37 +209,37 @@ class ATM:
 
 
     #Transfer amount to anothe Account
-    def fund_transfer():
-        #check the account num login 
-        if not current_acc:
-            print("login first")
-            return
+    def fund_transfer(self):
         to_acc = input("Enter the reciver account: ")
-
         #Check the receiver account Exist
-        if  to_acc not in Accounts:
-            print("\nReciver account not found") 
-            return
+        while True:
+            if  to_acc not in self.Accounts:
+                print("\nReciver account not found") 
+            else:
+                break
         #we cannot transfer the amount to the same account
-        if to_acc == current_acc:
-            print("\nYou cannot transfer to your own account")
-            return
+        while True:
+            if to_acc == self.current_acc:
+                print("\nYou cannot transfer to your own account")
+            else:
+                break
         
         transfer_amount = int(input("Enter the Amount: "))
         #check the balance
-        if Accounts[current_acc]["balance"] < transfer_amount:
-            print(f"\nInsufficient balance!.. your current Balance {Accounts[current_acc]['balance']} ")
+        if self.Accounts[self.current_acc]["balance"] < transfer_amount:
+            print(f"\nInsufficient balance!.. your current Balance {self.Accounts[self.current_acc]['balance']} ")
             return
 
-        
-        Accounts[current_acc]["balance"] -= transfer_amount
-        Accounts[to_acc]["balance"] += transfer_amount
+        #calculation for debit and credit the account balance
+        self.Accounts[self.current_acc]["balance"] -= transfer_amount
+        self.Accounts[to_acc]["balance"] += transfer_amount
 
-        Accounts[current_acc]["acc_statement"].append(f"Amount Transfer too {to_acc}. Transfered Amount = {float(transfer_amount)}. current balance {float(Accounts[current_acc]['balance'])}")
-        Accounts[to_acc]["acc_statement"].append(f"Amount Received From {current_acc}. Received Amount = {float(transfer_amount)}. current balance {float(Accounts[to_acc]['balance'])}")
+        #sendind the message to the transation statement
+        self.Accounts[self.current_acc]["acc_statement"].append(f"Amount Transfer too {to_acc}. Transfered Amount = {float(transfer_amount)}. current balance {float(self.Accounts[self.current_acc]['balance'])}")
+        self.Accounts[to_acc]["acc_statement"].append(f"Amount Received From {self.current_acc}. Received Amount = {float(transfer_amount)}. current balance {float(self.Accounts[to_acc]['balance'])}")
         
         print("Transfered Succefully")
-        save()
+        self.save()
 
     def show_transation_statement():
         #check the account num login 
