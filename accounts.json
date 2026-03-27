@@ -18,15 +18,6 @@
             "Amount Deposited 1000., total balance = 7100.0"
         ]
     },
-    "a2": {
-        "name": "varun",
-        "ph": 9638527410,
-        "pin": 1234,
-        "balance": 3000,
-        "acc_statement": [
-            "Amount Received From a1. Transfered Amount = 2000. current balance 3000"
-        ]
-    },
     "6520620": {
         "name": "Bhavan",
         "ph": 9638527410,
