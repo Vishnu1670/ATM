@@ -1,5 +1,29 @@
 import json
 import os
+import smtplib  
+from email.mime.text import MIMEText
+
+
+class EmailService:
+    def __init__(self):
+        self.sender_email = "vishnuvardhan1691@gmail.com"
+        self.sender_password = "buyn zbxi vpnw uvpl"  # Gmail App Password
+
+    def send_email(self, receiver_email, subject, message):
+        msg = MIMEText(message)
+        msg["Subject"] = subject
+        msg["From"] = self.sender_email
+        msg["To"] = receiver_email
+
+        try:
+            server = smtplib.SMTP("smtp.gmail.com", 587)
+            server.starttls()
+            server.login(self.sender_email, self.sender_password)
+            server.send_message(msg)
+            server.quit()
+            print("Email sent successfully")
+        except Exception as e:
+            print("Email failed:", e)
 
 # ATM:
 
@@ -11,8 +35,9 @@ import os
 # 6. Pin change
 # 7. Fund transfer
 # 8. Transaction Statement
-class ATM:
+class ATM(EmailService):
     def __init__(self):
+        super().__init__() 
         # File that store json dats
         self.File = "accounts.json"
         #The place were the data saves
@@ -71,6 +96,11 @@ class ATM:
                 print("\nPlease enter 10 digit Phone number !..")
                 return
             
+            email = input("\nEnter Email: ")
+            if "@" not in email or "." not in email:
+                print("Invalid Email format")
+                return
+            
             pin = input("\nEnter a 4 Digit PIN Number: ")
             #Check the pin
             if len(pin) != 4 or  not pin.isdigit():
@@ -91,6 +121,7 @@ class ATM:
                 "ph": int(ph),
                 "pin": int(pin),
                 "balance": float(balance),
+                "email": email,
                 "acc_statement": []
             }
 
@@ -142,6 +173,11 @@ class ATM:
         self.Accounts[self.current_acc]["balance"] = add_balance
         self.Accounts[self.current_acc]["acc_statement"].append(f"Amount Deposited {amount}., total balance = {add_balance}")
         print (f'\nSuccefully Deposited!.. This is your Current balance {add_balance} ')
+        self.send_email(
+            self.Accounts[self.current_acc]["email"],
+            "Deposit Successful",
+            f"Amount Deposited: {amount}\nAvailable Balance: {add_balance}"
+        )
         self.save()
 
     def withdraw(self):        
@@ -165,6 +201,11 @@ class ATM:
         self.Accounts[self.current_acc]["balance"] = withdraw_balance
         self.Accounts[self.current_acc]["acc_statement"].append(f"Amount Withdraw {amount}, total balance = {withdraw_balance}")
         print (f'\nSuccefully Withdraw!.. This is your Current balance {withdraw_balance}')
+        self.send_email(
+            self.Accounts[self.current_acc]["email"],
+            "Withdrawal Successful",
+            f"Amount Withdrawn: {amount}\nRemaining Balance: {withdraw_balance}"
+        )
         self.save()
 
     #Balance check
@@ -176,6 +217,11 @@ class ATM:
             return
         balance = self.Accounts[self.current_acc]["balance"]
         print(f"\nYour Balance is RS: {balance}")
+        self.send_email(
+            self.Accounts[self.current_acc]["email"],
+            "Balance Enquiry",
+            f"Your Current Balance is: {balance}"
+        )
 
     #change Account pin
     def pin_change(self):  
@@ -184,11 +230,9 @@ class ATM:
         #getting the new pin
         og_pin = self.Accounts[self.current_acc]["pin"]
         #checking the correct pin
-        while True:
-            if old_pin != og_pin:
-                print("\nEnter the correct pin")
-            else:
-                break
+        if old_pin != og_pin:
+            print("Enter the correct pin")
+            return
         
         new_pin = int(input("Enter the new Pin: "))
         #check the old and new pin are same
@@ -212,17 +256,14 @@ class ATM:
     def fund_transfer(self):
         to_acc = input("Enter the reciver account: ")
         #Check the receiver account Exist
-        while True:
-            if  to_acc not in self.Accounts:
-                print("\nReciver account not found") 
-            else:
-                break
+        
+        if to_acc not in self.Accounts:
+            print("Receiver account not found")
+            return
         #we cannot transfer the amount to the same account
-        while True:
-            if to_acc == self.current_acc:
-                print("\nYou cannot transfer to your own account")
-            else:
-                break
+        if to_acc == self.current_acc:
+            print("You cannot transfer to your own account")
+            return
         
         transfer_amount = int(input("Enter the Amount: "))
         #check the balance
@@ -237,8 +278,18 @@ class ATM:
         #sendind the message to the transation statement
         self.Accounts[self.current_acc]["acc_statement"].append(f"Amount Transfer too {to_acc}. Transfered Amount = {float(transfer_amount)}. current balance {float(self.Accounts[self.current_acc]['balance'])}")
         self.Accounts[to_acc]["acc_statement"].append(f"Amount Received From {self.current_acc}. Received Amount = {float(transfer_amount)}. current balance {float(self.Accounts[to_acc]['balance'])}")
-        
+        self.send_email(
+            self.Accounts[self.current_acc]["email"],
+            "Transfer Successful",
+            f"Transferred {transfer_amount} to {to_acc}\nRemaining Balance: {self.Accounts[self.current_acc]['balance']}"
+        )
+        self.send_email(
+            self.Accounts[to_acc]["email"],
+            "Amount Received",
+            f"You received {transfer_amount} from {self.current_acc}\nCurrent Balance: {self.Accounts[to_acc]['balance']}"
+        )
         print("Transfered Succefully")
+        
         self.save()
 
     def show_transation_statement(self):
@@ -272,7 +323,12 @@ while True:
         3. Exit
         """)
 
-        choice = int(input("Enter option: "))
+        choice = input("Enter your option Number: ")
+
+        if not choice.isdigit():
+            print("Invalid input ")
+            continue
+        choice = int(choice)
 
         if choice == 1:
             atm.account_reg()
@@ -297,8 +353,14 @@ while True:
         8. Logout
         """)
 
-        choice = int(input("Enter option: "))
+        choice = input("Enter your option Number: ")
 
+        if not choice.isdigit():
+            print("Invalid input ")
+            continue
+
+        choice = int(choice)
+    
         if choice == 1:
             atm.deposit()
         elif choice == 2:
