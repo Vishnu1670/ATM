@@ -222,11 +222,9 @@ class ATM(EmailService):
         #getting the new pin
         og_pin = self.Accounts[self.current_acc]["pin"]
         #checking the correct pin
-        while True:
-            if old_pin != og_pin:
-                print("\nEnter the correct pin")
-            else:
-                break
+        if old_pin != og_pin:
+            print("Enter the correct pin")
+            return
         
         new_pin = int(input("Enter the new Pin: "))
         #check the old and new pin are same
@@ -250,17 +248,14 @@ class ATM(EmailService):
     def fund_transfer(self):
         to_acc = input("Enter the reciver account: ")
         #Check the receiver account Exist
-        while True:
-            if  to_acc not in self.Accounts:
-                print("\nReciver account not found") 
-            else:
-                break
+        
+        if to_acc not in self.Accounts:
+            print("Receiver account not found")
+            return
         #we cannot transfer the amount to the same account
-        while True:
-            if to_acc == self.current_acc:
-                print("\nYou cannot transfer to your own account")
-            else:
-                break
+        if to_acc == self.current_acc:
+            print("You cannot transfer to your own account")
+            return
         
         transfer_amount = int(input("Enter the Amount: "))
         #check the balance
@@ -275,8 +270,18 @@ class ATM(EmailService):
         #sendind the message to the transation statement
         self.Accounts[self.current_acc]["acc_statement"].append(f"Amount Transfer too {to_acc}. Transfered Amount = {float(transfer_amount)}. current balance {float(self.Accounts[self.current_acc]['balance'])}")
         self.Accounts[to_acc]["acc_statement"].append(f"Amount Received From {self.current_acc}. Received Amount = {float(transfer_amount)}. current balance {float(self.Accounts[to_acc]['balance'])}")
-        
+        self.send_email(
+            self.Accounts[self.current_acc]["email"],
+            "Transfer Successful",
+            f"Transferred {transfer_amount} to {to_acc}\nRemaining Balance: {self.Accounts[self.current_acc]['balance']}"
+        )
+        self.send_email(
+            self.Accounts[to_acc]["email"],
+            "Amount Received",
+            f"You received {transfer_amount} from {self.current_acc}\nCurrent Balance: {self.Accounts[to_acc]['balance']}"
+        )
         print("Transfered Succefully")
+        
         self.save()
 
     def show_transation_statement(self):
