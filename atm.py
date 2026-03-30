@@ -315,7 +315,12 @@ while True:
         3. Exit
         """)
 
-        choice = int(input("Enter option: "))
+        choice = input("Enter your option Number: ")
+
+        if not choice.isdigit():
+            print("Invalid input ")
+            continue
+        choice = int(choice)
 
         if choice == 1:
             atm.account_reg()
@@ -340,8 +345,14 @@ while True:
         8. Logout
         """)
 
-        choice = int(input("Enter option: "))
+        choice = input("Enter your option Number: ")
 
+        if not choice.isdigit():
+            print("Invalid input ")
+            continue
+
+        choice = int(choice)
+    
         if choice == 1:
             atm.deposit()
         elif choice == 2:
@@ -360,6 +371,3 @@ while True:
             atm.logout()
         else:
             print("Invalid Choice")
-
-
-    
