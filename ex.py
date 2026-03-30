@@ -1,5 +1,29 @@
 import json
 import os
+import smtplib  
+from email.mime.text import MIMEText
+
+
+class EmailService:
+    def __init__(self):
+        self.sender_email = "vishnuvardhan1691@gmail.com"
+        self.sender_password = "buyn zbxi vpnw uvpl"  # Gmail App Password
+
+    def send_email(self, receiver_email, subject, message):
+        msg = MIMEText(message)
+        msg["Subject"] = subject
+        msg["From"] = self.sender_email
+        msg["To"] = receiver_email
+
+        try:
+            server = smtplib.SMTP("smtp.gmail.com", 587)
+            server.starttls()
+            server.login(self.sender_email, self.sender_password)
+            server.send_message(msg)
+            server.quit()
+            print("Email sent successfully")
+        except Exception as e:
+            print("Email failed:", e)
 
 # ATM:
 
