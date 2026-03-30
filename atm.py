@@ -101,6 +101,21 @@ class ATM(EmailService):
                 print("Invalid Email format")
                 return
             
+            sec_email_option = input("Do you want to share your transaction statement with another email? (y/n):").lower()
+            if sec_email_option == "y":
+                cc_email = input("Enter the additional email address: ")
+                if "@" not in cc_email or "." not in cc_email:
+                    print("Invalid Email format")
+                    return
+                if cc_email == email:
+                    print("you can't give same mail for both!..")
+                    return
+            elif sec_email_option == "n":
+                cc_email = None
+            else:
+                print("Invalid option. Please enter y or n")
+                return
+
             pin = input("\nEnter a 4 Digit PIN Number: ")
             #Check the pin
             if len(pin) != 4 or  not pin.isdigit():
@@ -123,6 +138,7 @@ class ATM(EmailService):
                 "pin": int(pin),
                 "balance": float(balance),
                 "email": email,
+                "cc_email":cc_email,
                 "acc_statement": []
             }
 
@@ -174,30 +190,54 @@ class ATM(EmailService):
         self.Accounts[self.current_acc]["balance"] = add_balance
         self.Accounts[self.current_acc]["acc_statement"].append(f"Amount Deposited {amount}., total balance = {add_balance}")
         print (f'\nSuccefully Deposited!.. This is your Current balance {add_balance} ')
-        self.save()
-
-    def deposit(self):        
-        pin = int(input("Enter the pin: "))
-        if pin != self.Accounts[self.current_acc]["pin"]:
-            print("\nEnter the correct PIN")
-            return
-
-        amount = float(input("\nEnter the amount you want to Deposit: "))
-        balance = self.Accounts[self.current_acc]["balance"]
-        add_balance = amount + balance
-
-        if amount <= 0:
-            print("\nCan't give Negative value or Zero ")
-            return
-        
-        self.Accounts[self.current_acc]["balance"] = add_balance
-        self.Accounts[self.current_acc]["acc_statement"].append(f"Amount Deposited {amount}., total balance = {add_balance}")
-        print (f'\nSuccefully Deposited!.. This is your Current balance {add_balance} ')
         self.send_email(
             self.Accounts[self.current_acc]["email"],
             "Deposit Successful",
             f"Amount Deposited: {amount}\nAvailable Balance: {add_balance}"
         )
+        cc = self.Accounts[self.current_acc]["cc_email"]
+        if cc:
+            self.send_email(
+                self.Accounts[self.current_acc]["cc_email"],
+                "Deposit Successful",
+                f"Amount Deposited: {amount}\nAvailable Balance: {add_balance}"
+            )
+        self.save()
+
+    def withdraw(self):        
+        pin = int(input("Enter the pin: "))
+        if pin != self.Accounts[self.current_acc]["pin"]:
+            print("Enter the correct PIN")
+            return
+        
+        amount = float(input("Enter the amount you want to withdraw: "))
+        balance = self.Accounts[self.current_acc]["balance"]
+
+        if amount <= 0:
+            print("Invalid amount")
+            return
+
+        if balance < amount:
+            print ("Insufficient balance!..")
+            return
+        
+        withdraw_balance = balance - amount
+        self.Accounts[self.current_acc]["balance"] = withdraw_balance
+        self.Accounts[self.current_acc]["acc_statement"].append(f"Amount Withdraw {amount}, total balance = {withdraw_balance}")
+        print (f'\nSuccefully Withdraw!.. This is your Current balance {withdraw_balance}')
+        self.send_email(
+            self.Accounts[self.current_acc]["email"],
+            "Withdrawal Successful",
+            f"Amount Withdrawn: {amount}\nRemaining Balance: {withdraw_balance}"
+        )
+
+        cc = self.Accounts[self.current_acc]["cc_email"]
+        if cc:
+            self.send_email(
+                cc,
+                "Withdrawal Successful",
+                f"Amount Withdrawn: {amount}\nRemaining Balance: {withdraw_balance}"
+            )
         self.save()
 
     #Balance check
@@ -214,6 +254,13 @@ class ATM(EmailService):
             "Balance Enquiry",
             f"Your Current Balance is: {balance}"
         )
+        cc = self.Accounts[self.current_acc]["cc_email"]
+        if cc:
+            self.send_email(
+                self.Accounts[self.current_acc]["cc_email"],
+                "Balance Enquiry",
+                f"Your Current Balance is: {balance}"
+            )
 
     #change Account pin
     def pin_change(self):  
@@ -280,9 +327,24 @@ class ATM(EmailService):
             "Amount Received",
             f"You received {transfer_amount} from {self.current_acc}\nCurrent Balance: {self.Accounts[to_acc]['balance']}"
         )
-        print("Transfered Succefully")
-        
+        cc_sender = self.Accounts[self.current_acc]["cc_email"]
+        cc_receiver = self.Accounts[to_acc]["cc_email"]
+
+        if cc_sender:
+            self.send_email(
+                cc_sender,
+                "Transfer Successful",
+                f"Transferred {transfer_amount} to {to_acc}\nRemaining Balance: {self.Accounts[self.current_acc]['balance']}"
+            )
+
+        if cc_receiver:
+            self.send_email(
+                cc_receiver,
+                "Amount Received",
+                f"You received {transfer_amount} from {self.current_acc}\nCurrent Balance: {self.Accounts[to_acc]['balance']}"
+            )
         self.save()
+        print("Transfered Successfully")
 
     def show_transation_statement(self):
         #print the acc statement
