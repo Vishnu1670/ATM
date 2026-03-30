@@ -5,64 +5,16 @@
         "pin": 1234,
         "balance": 8100.0,
         "email": "vishnuvardhan1691@gmail.com",
-        "acc_statement": [
-            "Amount Deposited 5000, total balance = 6000",
-            "Amount Withdraw 3000, total balance = 3000",
-            "Amount Transfer too a2. Transfered Amount = 2000. current balance 1000",
-            "Amount Received From 6520620. Received Amount = 1000. current balance 2000",
-            "Amount Deposited -500, total balance = 1500",
-            "Amount Withdraw -500, total balance = 2000",
-            "Amount Withdraw 2000, total balance = 0",
-            "Amount Deposited 5000, total balance = 5000",
-            "Amount Deposited 1000, total balance = 6000",
-            "Amount Deposited 100., total balance = 6100",
-            "Amount Deposited 1000., total balance = 7100.0",
-            "Amount Received From v1. Received Amount = 1000.0. current balance 8100.0"
-        ]
+        "cc_email": "varunaron607@gmail.com",
+        "acc_statement": []
     },
-    "a2": {
-        "name": "varun",
-        "ph": 9638527410,
-        "pin": 1234,
-        "balance": 3000,
-        "acc_statement": [
-            "Amount Received From a1. Transfered Amount = 2000. current balance 3000"
-        ]
-    },
-    "6520620": {
-        "name": "Bhavan",
-        "ph": 9638527410,
-        "pin": 4321,
-        "balance": 0,
-        "acc_statement": [
-            "Amount Deposited 2000, total balance = 3000",
-            "Amount Withdraw 2000, total balance = 1000",
-            "Amount Transfer too a1. Transfered Amount = 1000. current balance 0"
-        ]
-    },
-    "D1": {
-        "name": "tharun",
+    "vishnu1": {
+        "name": "vishnu",
         "ph": 7894561230,
         "pin": 1234,
-        "balance": 90000.0,
-        "email": "sudarshan@aerele.in",
-        "acc_statement": [
-            "Amount Deposited 1000.0., total balance = 101000.0",
-            "Amount Withdraw 10000.0, total balance = 91000.0",
-            "Amount Transfer too v1. Transfered Amount = 1000.0. current balance 90000.0"
-        ]
-    },
-    "v1": {
-        "name": "varun",
-        "ph": 7418529630,
-        "pin": 1234,
-        "balance": 1900.0,
-        "email": "varunaron607@gmail.com",
-        "acc_statement": [
-            "Amount Received From D1. Received Amount = 1000.0. current balance 2000.0",
-            "Amount Withdraw 100.0, total balance = 1900.0",
-            "Amount Deposited 1000.0., total balance = 2900.0",
-            "Amount Transfer too a1. Transfered Amount = 1000.0. current balance 1900.0"
-        ]
+        "balance": 70000.0,
+        "email": "vishnuvardhan1691@gmail.com",
+        "cc_email": "varunaron607@gmail.com",
+        "acc_statement": []
     }
 }
