@@ -209,6 +209,11 @@ class ATM(EmailService):
             return
         balance = self.Accounts[self.current_acc]["balance"]
         print(f"\nYour Balance is RS: {balance}")
+        self.send_email(
+            self.Accounts[self.current_acc]["email"],
+            "Balance Enquiry",
+            f"Your Current Balance is: {balance}"
+        )
 
     #change Account pin
     def pin_change(self):  
