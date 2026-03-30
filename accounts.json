@@ -3,7 +3,8 @@
         "name": "vishnu",
         "ph": 9638527410,
         "pin": 1234,
-        "balance": 7100.0,
+        "balance": 8100.0,
+        "email": "vishnuvardhan1691@gmail.com",
         "acc_statement": [
             "Amount Deposited 5000, total balance = 6000",
             "Amount Withdraw 3000, total balance = 3000",
@@ -15,7 +16,8 @@
             "Amount Deposited 5000, total balance = 5000",
             "Amount Deposited 1000, total balance = 6000",
             "Amount Deposited 100., total balance = 6100",
-            "Amount Deposited 1000., total balance = 7100.0"
+            "Amount Deposited 1000., total balance = 7100.0",
+            "Amount Received From v1. Received Amount = 1000.0. current balance 8100.0"
         ]
     },
     "a2": {
@@ -36,6 +38,31 @@
             "Amount Deposited 2000, total balance = 3000",
             "Amount Withdraw 2000, total balance = 1000",
             "Amount Transfer too a1. Transfered Amount = 1000. current balance 0"
+        ]
+    },
+    "D1": {
+        "name": "tharun",
+        "ph": 7894561230,
+        "pin": 1234,
+        "balance": 90000.0,
+        "email": "sudarshan@aerele.in",
+        "acc_statement": [
+            "Amount Deposited 1000.0., total balance = 101000.0",
+            "Amount Withdraw 10000.0, total balance = 91000.0",
+            "Amount Transfer too v1. Transfered Amount = 1000.0. current balance 90000.0"
+        ]
+    },
+    "v1": {
+        "name": "varun",
+        "ph": 7418529630,
+        "pin": 1234,
+        "balance": 1900.0,
+        "email": "varunaron607@gmail.com",
+        "acc_statement": [
+            "Amount Received From D1. Received Amount = 1000.0. current balance 2000.0",
+            "Amount Withdraw 100.0, total balance = 1900.0",
+            "Amount Deposited 1000.0., total balance = 2900.0",
+            "Amount Transfer too a1. Transfered Amount = 1000.0. current balance 1900.0"
         ]
     }
 }
