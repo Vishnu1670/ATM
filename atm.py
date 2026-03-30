@@ -101,6 +101,21 @@ class ATM(EmailService):
                 print("Invalid Email format")
                 return
             
+            sec_email_option = input("Do you want to share your transaction statement with another email? (y/n):").lower()
+            if sec_email_option == "y":
+                cc_email = input("Enter the additional email address: ")
+                if "@" not in cc_email or "." not in cc_email:
+                    print("Invalid Email format")
+                    return
+                if cc_email == email:
+                    print("you can't give same mail for both!..")
+                    return
+            elif sec_email_option == "n":
+                cc_email = None
+            else:
+                print("Invalid option. Please enter y or n")
+                return
+
             pin = input("\nEnter a 4 Digit PIN Number: ")
             #Check the pin
             if len(pin) != 4 or  not pin.isdigit():
@@ -112,6 +127,7 @@ class ATM(EmailService):
 
                 if balance <= 0:
                     print("\nAmount must be greater than 0!..")
+                
             except ValueError:
                 print("\nPlease enter a valid number!..")
         
@@ -122,6 +138,7 @@ class ATM(EmailService):
                 "pin": int(pin),
                 "balance": float(balance),
                 "email": email,
+                "cc_email":cc_email,
                 "acc_statement": []
             }
 
@@ -178,6 +195,13 @@ class ATM(EmailService):
             "Deposit Successful",
             f"Amount Deposited: {amount}\nAvailable Balance: {add_balance}"
         )
+        cc = self.Accounts[self.current_acc]["cc_email"]
+        if cc:
+            self.send_email(
+                self.Accounts[self.current_acc]["cc_email"],
+                "Deposit Successful",
+                f"Amount Deposited: {amount}\nAvailable Balance: {add_balance}"
+            )
         self.save()
 
     def withdraw(self):        
@@ -206,6 +230,14 @@ class ATM(EmailService):
             "Withdrawal Successful",
             f"Amount Withdrawn: {amount}\nRemaining Balance: {withdraw_balance}"
         )
+
+        cc = self.Accounts[self.current_acc]["cc_email"]
+        if cc:
+            self.send_email(
+                cc,
+                "Withdrawal Successful",
+                f"Amount Withdrawn: {amount}\nRemaining Balance: {withdraw_balance}"
+            )
         self.save()
 
     #Balance check
@@ -222,6 +254,13 @@ class ATM(EmailService):
             "Balance Enquiry",
             f"Your Current Balance is: {balance}"
         )
+        cc = self.Accounts[self.current_acc]["cc_email"]
+        if cc:
+            self.send_email(
+                self.Accounts[self.current_acc]["cc_email"],
+                "Balance Enquiry",
+                f"Your Current Balance is: {balance}"
+            )
 
     #change Account pin
     def pin_change(self):  
@@ -288,9 +327,24 @@ class ATM(EmailService):
             "Amount Received",
             f"You received {transfer_amount} from {self.current_acc}\nCurrent Balance: {self.Accounts[to_acc]['balance']}"
         )
-        print("Transfered Succefully")
-        
+        cc_sender = self.Accounts[self.current_acc]["cc_email"]
+        cc_receiver = self.Accounts[to_acc]["cc_email"]
+
+        if cc_sender:
+            self.send_email(
+                cc_sender,
+                "Transfer Successful",
+                f"Transferred {transfer_amount} to {to_acc}\nRemaining Balance: {self.Accounts[self.current_acc]['balance']}"
+            )
+
+        if cc_receiver:
+            self.send_email(
+                cc_receiver,
+                "Amount Received",
+                f"You received {transfer_amount} from {self.current_acc}\nCurrent Balance: {self.Accounts[to_acc]['balance']}"
+            )
         self.save()
+        print("Transfered Successfully")
 
     def show_transation_statement(self):
         #print the acc statement
@@ -379,6 +433,3 @@ while True:
             atm.logout()
         else:
             print("Invalid Choice")
-
-
-    
