@@ -96,6 +96,11 @@ class ATM(EmailService):
                 print("\nPlease enter 10 digit Phone number !..")
                 return
             
+            email = input("\nEnter Email: ")
+            if "@" not in email or "." not in email:
+                print("Invalid Email format")
+                return
+            
             pin = input("\nEnter a 4 Digit PIN Number: ")
             #Check the pin
             if len(pin) != 4 or  not pin.isdigit():
@@ -107,6 +112,7 @@ class ATM(EmailService):
 
                 if balance <= 0:
                     print("\nAmount must be greater than 0!..")
+                
             except ValueError:
                 print("\nPlease enter a valid number!..")
         
@@ -116,6 +122,7 @@ class ATM(EmailService):
                 "ph": int(ph),
                 "pin": int(pin),
                 "balance": float(balance),
+                "email": email,
                 "acc_statement": []
             }
 
@@ -169,27 +176,28 @@ class ATM(EmailService):
         print (f'\nSuccefully Deposited!.. This is your Current balance {add_balance} ')
         self.save()
 
-    def withdraw(self):        
+    def deposit(self):        
         pin = int(input("Enter the pin: "))
         if pin != self.Accounts[self.current_acc]["pin"]:
-            print("Enter the correct PIN")
+            print("\nEnter the correct PIN")
             return
-        
-        amount = float(input("Enter the amount you want to withdraw: "))
+
+        amount = float(input("\nEnter the amount you want to Deposit: "))
         balance = self.Accounts[self.current_acc]["balance"]
+        add_balance = amount + balance
 
         if amount <= 0:
-            print("Invalid amount")
-            return
-
-        if balance < amount:
-            print ("Insufficient balance!..")
+            print("\nCan't give Negative value or Zero ")
             return
         
-        withdraw_balance = balance - amount
-        self.Accounts[self.current_acc]["balance"] = withdraw_balance
-        self.Accounts[self.current_acc]["acc_statement"].append(f"Amount Withdraw {amount}, total balance = {withdraw_balance}")
-        print (f'\nSuccefully Withdraw!.. This is your Current balance {withdraw_balance}')
+        self.Accounts[self.current_acc]["balance"] = add_balance
+        self.Accounts[self.current_acc]["acc_statement"].append(f"Amount Deposited {amount}., total balance = {add_balance}")
+        print (f'\nSuccefully Deposited!.. This is your Current balance {add_balance} ')
+        self.send_email(
+            self.Accounts[self.current_acc]["email"],
+            "Deposit Successful",
+            f"Amount Deposited: {amount}\nAvailable Balance: {add_balance}"
+        )
         self.save()
 
     #Balance check
