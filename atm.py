@@ -35,8 +35,9 @@ class EmailService:
 # 6. Pin change
 # 7. Fund transfer
 # 8. Transaction Statement
-class ATM:
+class ATM(EmailService):
     def __init__(self):
+        super().__init__() 
         # File that store json dats
         self.File = "accounts.json"
         #The place were the data saves
