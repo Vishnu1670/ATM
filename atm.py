@@ -1,13 +1,24 @@
 import json
 import os
 import smtplib  
+from dotenv import load_dotenv
 from email.mime.text import MIMEText
+from datetime import datetime
+import schedule
+import time
+import threading
+from reportlab.platypus import SimpleDocTemplate, Paragraph
+from reportlab.lib.styles import getSampleStyleSheet
+from email.mime.multipart import MIMEMultipart
+from email.mime.base import MIMEBase
+from email import encoders
+load_dotenv()
 
 
 class EmailService:
     def __init__(self):
-        self.sender_email = "vishnuvardhan1691@gmail.com"
-        self.sender_password = "buyn zbxi vpnw uvpl"  # Gmail App Password
+        self.sender_email = os.getenv("EMAIL_USER")
+        self.sender_password = os.getenv("EMAIL_PASSWORD")  # Gmail App Password
 
     def send_email(self, receiver_email, subject, message):
         msg = MIMEText(message)
@@ -25,6 +36,32 @@ class EmailService:
         except Exception as e:
             print("Email failed:", e)
 
+    def send_email_with_attachment(self, receiver_email, subject, message, file_path):
+        msg = MIMEMultipart()
+        msg["From"] = self.sender_email
+        msg["To"] = receiver_email
+        msg["Subject"] = subject
+
+        msg.attach(MIMEText(message, "plain"))
+
+        with open(file_path, "rb") as f:
+            part = MIMEBase("application", "octet-stream")
+            part.set_payload(f.read())
+
+        encoders.encode_base64(part)
+        part.add_header("Content-Disposition", f"attachment; filename={file_path}")
+        msg.attach(part)
+
+        try:
+            server = smtplib.SMTP("smtp.gmail.com", 587)
+            server.starttls()
+            server.login(self.sender_email, self.sender_password)
+            server.send_message(msg)
+            server.quit()
+            print("Weekly report sent")
+        except Exception as e:
+            print("Failed:", e)
+        
 # ATM:
 
 # 1. Account register
@@ -55,6 +92,49 @@ class ATM(EmailService):
         else:
             self.Accounts = {}
 
+    def generate_pdf(self, acc_no):
+        file_name = f"{acc_no}_weekly_report.pdf"
+        doc = SimpleDocTemplate(file_name)
+        styles = getSampleStyleSheet()
+
+        content = []
+
+        content.append(Paragraph(f"Account Number: {acc_no}", styles["Title"]))
+        content.append(Paragraph("Weekly Transaction Report", styles["Heading2"]))
+
+        statements = self.Accounts[acc_no]["acc_statement"]
+
+        if not statements:
+            content.append(Paragraph("No transactions available", styles["Normal"]))
+        else:
+            for s in statements:
+                content.append(Paragraph(s, styles["Normal"]))
+
+        doc.build(content)
+        return file_name
+
+    def send_weekly_reports(self):
+        print("Running weekly report job...")
+
+        for acc_no, data in self.Accounts.items():
+            pdf_file = self.generate_pdf(acc_no)
+
+            self.send_email_with_attachment(
+                data["email"],
+                "Weekly Transaction Report",
+                "Please find your weekly transaction report attached.",
+                pdf_file
+            )
+
+            if data["cc_email"]:
+                self.send_email_with_attachment(
+                    data["cc_email"],
+                    "Weekly Transaction Report",
+                    "Please find your weekly transaction report attached.",
+                    pdf_file
+                )
+            self.Accounts[acc_no]["acc_statement"] = []
+            self.save()
 
     #saves the data to the json file
     def save(self):
@@ -202,6 +282,10 @@ class ATM(EmailService):
                 "Deposit Successful",
                 f"Amount Deposited: {amount}\nAvailable Balance: {add_balance}"
             )
+        time_now = datetime.now().strftime("%d-%m-%Y %H:%M")
+        self.Accounts[self.current_acc]["acc_statement"].append(
+            f"{time_now} - Deposit {amount}, balance = {add_balance}"
+        )
         self.save()
 
     def withdraw(self):        
@@ -238,6 +322,10 @@ class ATM(EmailService):
                 "Withdrawal Successful",
                 f"Amount Withdrawn: {amount}\nRemaining Balance: {withdraw_balance}"
             )
+        time_now = datetime.now().strftime("%d-%m-%Y %H:%M")
+        self.Accounts[self.current_acc]["acc_statement"].append(
+            f"{time_now} - Withdraw {amount}, balance = {withdraw_balance}"
+        )
         self.save()
 
     #Balance check
@@ -366,8 +454,16 @@ class ATM(EmailService):
         else:
             print("Cancelled")
 
+def run_scheduler(atm):
+    schedule.every().monday.at("09:00").do(atm.send_weekly_reports)
+
+    while True:
+        schedule.run_pending()
+        time.sleep(60)
+
 #Assiging  the object for the class 
 atm = ATM()
+threading.Thread(target=run_scheduler, args=(atm,), daemon=True).start()
 while True:
     #check is it in the current account
     if not atm.current_acc:
